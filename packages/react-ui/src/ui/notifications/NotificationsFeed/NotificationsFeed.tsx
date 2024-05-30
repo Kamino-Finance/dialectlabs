@@ -1,4 +1,4 @@
-import { useNotificationThreadMessages } from '@dialectlabs/react-sdk';
+import { ThreadMessage, useNotificationThreadMessages } from '@dialectlabs/react-sdk';
 import { PropsWithChildren, useEffect } from 'react';
 import { NoNotifications } from './NoNotifications';
 import { NotificationsList } from './NotificationsList';
@@ -20,7 +20,11 @@ export const NotificationsFeed = ({
   return children;
 };
 
-NotificationsFeed.Container = function NotificationsFeeContainer() {
+NotificationsFeed.Container = function NotificationsFeeContainer({
+  renderMessage,
+}: {
+  renderMessage?: (message: ThreadMessage, index: number) => JSX.Element;
+}) {
   const { messages, isMessagesLoading, markAsRead } =
     useNotificationThreadMessages();
 
@@ -35,7 +39,7 @@ NotificationsFeed.Container = function NotificationsFeeContainer() {
       isEmpty={messages.length === 0}
       isLoading={isMessagesLoading}
     >
-      <NotificationsList.Container messages={messages} />
+      <NotificationsList.Container messages={messages} renderMessage={renderMessage} />
     </NotificationsFeed>
   );
 };

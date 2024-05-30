@@ -1,4 +1,4 @@
-import { useUnreadNotifications } from '@dialectlabs/react-sdk';
+import { ThreadMessage, useUnreadNotifications } from '@dialectlabs/react-sdk';
 import clsx from 'clsx';
 import {
   PropsWithChildren,
@@ -24,6 +24,7 @@ const Modal = forwardRef<
     setOpen: (open: boolean | ((prev: boolean) => boolean)) => void;
     channels?: ChannelType[];
     theme?: ThemeType;
+    renderMessage?: (message: ThreadMessage, index: number) => JSX.Element;
   }
 >(function Modal(props, modalRef) {
   if (!props.open) {
@@ -100,6 +101,7 @@ interface NotificationsButtonProps {
   }) => ReactNode;
   channels?: ChannelType[];
   theme?: ThemeType;
+  renderMessage?: (message: ThreadMessage, index: number) => JSX.Element;
 }
 const DEFAULT_INTERVAL = 10000;
 
@@ -107,6 +109,7 @@ NotificationsButtonPresentation.Container =
   function NotificationsButtonContainer({
     channels,
     renderModalComponent,
+    renderMessage,
     children,
     theme,
   }: NotificationsButtonProps) {
@@ -156,13 +159,15 @@ NotificationsButtonPresentation.Container =
             open,
             setOpen,
             ref: modalRef,
-            children: <NotificationsBase {...externalProps} />, // `children` MUST BE USED
+            children: <NotificationsBase {...externalProps} renderMessage={renderMessage} />, // `children` MUST BE USED
           })
         ) : (
-          <Modal ref={modalRef} {...externalProps} />
+          <Modal ref={modalRef} {...externalProps} renderMessage={renderMessage} />
         )}
       </NotificationsButtonPresentation>
     );
   };
 
 export const NotificationsButton = memo(NotificationsButtonPresentation.Container);
+// eslint-disable-next-line react/display-name
+// export const NotificationsButton = memo(() => 'goingfine1');

@@ -12,8 +12,10 @@ export const NotificationsList = ({ children }: { children?: ReactNode }) => {
 
 NotificationsList.Container = function NotificationListContainer({
   messages,
+  renderMessage,
 }: {
   messages: ThreadMessage[];
+  renderMessage?: (message: ThreadMessage, index: number) => JSX.Element;
 }) {
   // potentially move to useSWR, since messages will change on every new fetch
   const context: NotificationsItemsProviderValue = useMemo(() => {
@@ -26,8 +28,8 @@ NotificationsList.Container = function NotificationListContainer({
   return (
     <NotificationsItemsContext.Provider value={context}>
       <NotificationsList>
-        {messages.map((it) => (
-          <NotificationMessage.Container key={it.id} id={it.id} />
+        {messages.map((it, index) => (
+          <NotificationMessage.Container key={it.id} id={it.id} index={index} renderMessage={renderMessage} />
         ))}
       </NotificationsList>
     </NotificationsItemsContext.Provider>
