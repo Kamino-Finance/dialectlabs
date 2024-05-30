@@ -1,3 +1,4 @@
+import { ThreadMessage } from '@dialectlabs/react-sdk';
 import clsx from 'clsx';
 import { memo, useMemo } from 'react';
 import { ChannelType, ThemeType } from '../../types';
@@ -16,10 +17,11 @@ export interface NotificationsProps {
   open?: boolean;
   setOpen?: (open: boolean | ((prev: boolean) => boolean)) => void;
   theme?: ThemeType;
+  renderMessage?: (message: ThreadMessage, index: number) => JSX.Element;
 }
 
 export const NotificationsBase = (
-  { channels = DEFAULT_CHANNELS, open, setOpen, theme }: NotificationsProps = {
+  { channels = DEFAULT_CHANNELS, open, setOpen, theme, renderMessage }: NotificationsProps = {
     channels: DEFAULT_CHANNELS,
   },
 ) => {
@@ -56,7 +58,7 @@ export const NotificationsBase = (
             {(route) => (
               <>
                 {route === Route.Settings && <SettingsScreen />}
-                {route === Route.Notifications && <NotificationsFeedScreen />}
+                {route === Route.Notifications && <NotificationsFeedScreen renderMessage={renderMessage} />}
               </>
             )}
           </Router>

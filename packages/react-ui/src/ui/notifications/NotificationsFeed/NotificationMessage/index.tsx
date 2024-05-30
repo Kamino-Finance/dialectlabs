@@ -12,8 +12,12 @@ import { ButtonAction } from './ButtonAction';
 import { LinkAction } from './LinkAction';
 import { getColor, getMessageURLTarget, timeFormatter } from './utils';
 
-export const NotificationMessage = (message: ThreadMessage) => {
+export const NotificationMessage = ({message, index, renderMessage}: {message: ThreadMessage, index: number, renderMessage?: (message: ThreadMessage, index: number) => JSX.Element}) => {
   const styles = getStyles(message.metadata?.notificationTypeHumanReadableId);
+
+  if (renderMessage) {
+    return renderMessage(message, index);
+  }
 
   return (
     <div
@@ -334,8 +338,12 @@ const getStyles = (notificationType?: string) => {
 
 NotificationMessage.Container = function NotificationMessageContainer({
   id,
+  index,
+  renderMessage,
 }: {
   id: ThreadMessage['id'];
+  index: number;
+  renderMessage?: (message: ThreadMessage, index: number) => JSX.Element;
 }) {
   const notification = useNotification(id);
 
@@ -343,5 +351,5 @@ NotificationMessage.Container = function NotificationMessageContainer({
     return null;
   }
 
-  return <NotificationMessage {...notification} />;
+  return <NotificationMessage message={notification} index={index} renderMessage={renderMessage} />;
 };
